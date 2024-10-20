@@ -52,12 +52,17 @@ class CourseControllerUnitTest {
 
         every { courseServiceMockk.addCourse(any()) } returns courseDTO(id=1)
 
-        val savedCourseDTO = webTestClient
-            .post() // post 요청
-            .uri("/v1/courses") // 요청 보낼 uri
-            .bodyValue(courseDTO) // 요청 본문에 courseDTO 객체 설정
-            .exchange() // 요청을 서버로 전송하고 응답 받음
+        val response = webTestClient
+            .post()
+            .uri("/v1/courses")
+            .bodyValue(courseDTO)
+            .exchange()
             .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals("courseDTO.category must not be blank, courseDTO.name must not be blank", response)
     }
 
     @Test
