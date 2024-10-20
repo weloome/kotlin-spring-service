@@ -47,6 +47,20 @@ class CourseControllerUnitTest {
     }
 
     @Test
+    fun addCourse_validation() {
+        val courseDTO = CourseDTO(null, "", "")
+
+        every { courseServiceMockk.addCourse(any()) } returns courseDTO(id=1)
+
+        val savedCourseDTO = webTestClient
+            .post() // post 요청
+            .uri("/v1/courses") // 요청 보낼 uri
+            .bodyValue(courseDTO) // 요청 본문에 courseDTO 객체 설정
+            .exchange() // 요청을 서버로 전송하고 응답 받음
+            .expectStatus().isBadRequest
+    }
+
+    @Test
     fun retrieveAllCourses() {
 
         every { courseServiceMockk.retrieveAllCourses() }.returnsMany(
