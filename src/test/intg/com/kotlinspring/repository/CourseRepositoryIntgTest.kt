@@ -28,4 +28,11 @@ class CourseRepositoryIntgTest {
         println("coursere: $courses")
         Assertions.assertEquals(2, courses.size)
     }
+
+    @Test
+    fun findCoursesByName() {
+        val courses = courseRepository.findCoursesByName("SpringBoot")
+        println("coursere: $courses")
+        Assertions.assertEquals(2, courses.size)
+    }
 }
