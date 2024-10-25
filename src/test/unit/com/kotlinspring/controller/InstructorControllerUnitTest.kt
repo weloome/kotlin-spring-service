@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.web.reactive.server.WebTestClient
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @WebMvcTest(controllers = [InstructorController::class])
@@ -39,5 +40,26 @@ class InstructorControllerUnitTest {
             .responseBody
 
         assertTrue { savedInstructorDTO!!.id != null }
+    }
+
+
+
+    @Test
+    fun addInstructor_validation() {
+        val instructorDTO = InstructorDTO(null, "")
+
+        every { instructorServiceMockk.createInstructor(any()) } returns InstructorDTO(1, "danbi")
+
+        val response = webTestClient
+            .post()
+            .uri("/v1/instructors")
+            .bodyValue(instructorDTO)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals("InstructorDTO.name must not be blank", response)
     }
 }
